@@ -22,10 +22,15 @@ const productSlice = createSlice({
   initialState: {
     items: [],
     selectedProduct: null,
+    selectedCategory: null,
     status: 'idle',
     error: null
   },
-  reducers: {},
+  reducers: {
+    setSelectedCategory: (state, action) => {
+      state.selectedCategory = action.payload;
+    }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(fetchProducts.pending, (state) => {
@@ -44,5 +49,5 @@ const productSlice = createSlice({
       });
   }
 });
-
+export const { setSelectedCategory } = productSlice.actions;
 export default productSlice.reducer;

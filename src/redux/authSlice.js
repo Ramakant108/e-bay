@@ -14,6 +14,21 @@ export const login = createAsyncThunk(
   }
 );
 
+export const register = createAsyncThunk(
+  'auth/register',
+  async (userData, { rejectWithValue }) => {
+    try {
+      const response = await axios.post('https://api.escuelajs.co/api/v1/users/', {
+        ...userData,
+        avatar: 'https://picsum.photos/800'  // Default avatar
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 export const fetchProfile = createAsyncThunk(
   'auth/fetchProfile',
   async (_, { rejectWithValue }) => {
@@ -36,7 +51,8 @@ const authSlice = createSlice({
     isAuthenticated: false,
     token: localStorage.getItem('access_token'),
     loading: false,
-    error: null
+    error: null,
+    registrationSuccess: false
   },
   reducers: {
     logout: (state) => {
@@ -44,11 +60,26 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.token = null;
       localStorage.removeItem('access_token');
+    },
+    clearRegistrationSuccess: (state) => {
+      state.registrationSuccess = false;
     }
   },
   extraReducers: (builder) => {
     builder
-      .addCase(login.pending, (state) => {
+    .addCase(register.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(register.fulfilled, (state) => {
+      state.loading = false;
+      state.registrationSuccess = true;
+    })
+    .addCase(register.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
+    })
+    .addCase(login.pending, (state) => {
         state.loading = true;
       })
       .addCase(login.fulfilled, (state, action) => {
@@ -67,5 +98,5 @@ const authSlice = createSlice({
   }
 });
 
-export const { logout } = authSlice.actions;
+export const { logout,clearRegistrationSuccess } = authSlice.actions;
 export default authSlice.reducer;
