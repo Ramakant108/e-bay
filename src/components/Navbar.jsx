@@ -18,21 +18,21 @@ const Navbar = () => {
     { name: 'Electronics', id: 2 },
     { name: 'Furniture', id: 3 },
     { name: 'Shoes', id: 4 },
-    { name: 'Grosery', id: 6 },
+    { name: 'Miscellaneous', id: 5 },
   ];
   const location = useLocation();
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get('https://api.escuelajs.co/api/v1/categories');
-        setCategories(response.data.slice(0, 5)); // Limit to 6 categories
-      } catch (err) {
-        console.error('Failed to fetch categories', err);
-      }
-    };
-    fetchCategories();
-  }, []);
+  // useEffect(() => {
+  //   const fetchCategories = async () => {
+  //     try {
+  //       const response = await axios.get('https://api.escuelajs.co/api/v1/categories');
+  //       setCategories(response.data.slice(0, 5)); // Limit to 6 categories
+  //     } catch (err) {
+  //       console.error('Failed to fetch categories', err);
+  //     }
+  //   };
+  //   fetchCategories();
+  // }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -83,15 +83,19 @@ const Navbar = () => {
             </form>
 
             <div className="flex flex-col md:flex-row md:items-center md:space-x-4">
+            <Link to="/orders" className="hover:text-blue-200">My Orders</Link>
               <Link to="/cart" className="flex items-center hover:text-blue-200">
                 Cart
                 <span className="bg-red-500 text-white rounded-full px-2 ml-1">
                   {cartItems.length}
                 </span>
               </Link>
+              <Link to="/profile" className="flex items-center hover:text-blue-200">
+                Profile
+              </Link>
               {isAuthenticated ? (
                 <>
-                  <span>Welcome, {user?.name}</span>
+                  {/* <span>Welcome, {user?.name}</span> */}
                   <button
                     onClick={() => dispatch(logout())}
                     className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"

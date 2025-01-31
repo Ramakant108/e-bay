@@ -1,40 +1,81 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { fetchProducts } from '../redux/productSlice';
 import { addToCart } from '../redux/cartSlice';
+
 // Hero Component - You can also move this to a separate file
-const Hero = ({ category }) => {
+
+const carouselItems = [
+  {
+    id: 1,
+    title: 'Everything you want and more',
+    subtitle: 'ELECTRONICS',
+    description: 'Choose from a vast selection of new tech.',
+    imageUrl: 'https://i.ebayimg.com/images/g/cYIAAOSwJI9nhSIl/s-l960.png',
+    buttonText: 'Show new electronics',
+    buttonLink: '/',
+    bgColor: 'bg-gray-100',
+    textColor: 'text-gray-500'
+  },
+  {
+    id: 2,
+    title: 'Your tech, your way',
+    subtitle: 'REFURBISHED',
+    description: 'Choose from a vast selection of refurbished tech.',
+    imageUrl: 'https://i.ebayimg.com/images/g/C2gAAOSwo7dnhSiq/s-l960.png',
+    buttonText: "It's up to you",
+    buttonLink: '/',
+    bgColor: 'bg-green-600',
+    textColor: 'text-white'
+  }
+];
+const Hero = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveIndex((prevIndex) => (prevIndex + 1) % carouselItems.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className="bg-gray-200 mt-4 mb-8">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div>
-            <span className="text-lg text-gray-600 mb-2 block">
-              {category?.name || 'ELECTRONICS'}
-            </span>
-            <h1 className="text-4xl font-bold mb-4">
-              Everything you want and more
-            </h1>
-            <p className="text-xl text-gray-600 mb-6">
-              Choose from a vast selection of new tech.
-            </p>
-            <Link
-              to="/"
-              className="inline-block bg-black text-white px-6 py-3 rounded-full hover:bg-gray-800 transition-colors"
-            >
-              Show new electronics
-            </Link>
-          </div>
-          <div className="relative">
-            <img
-              src="/api/placeholder/800/600"
-              alt="Electronics showcase"
-              className="rounded-lg shadow-lg w-full"
-            />
+    <div className="bg-white flex flex-col gap-4 mt-4 mb-8">
+      {carouselItems.map((item, index) => (
+        <div
+          key={item.id}
+          className={`rounded-2xl px-8  shadow-lg transition-opacity duration-1000 ${item.bgColor} ${
+            index === activeIndex ? 'block' : 'hidden'
+          }`}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+              <span className={`text-lg ${item.textColor} mb-2 block`}>{item.subtitle}</span>
+              <h1 className={`text-4xl font-bold mb-4 ${item.textColor}`}>{item.title}</h1>
+              <p className={`text-xl mb-6 ${item.textColor}`}>{item.description}</p>
+              <Link
+                to={item.buttonLink}
+                className={`inline-block px-6 py-3 rounded-full transition-colors ${
+                  item.bgColor === 'bg-green-600' ? 'bg-white text-green-700 hover:bg-gray-200' :
+                  item.bgColor === 'bg-blue-100' ? 'bg-gray-800 text-white hover:bg-gray-900' :
+                  'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+              >
+                {item.buttonText}
+              </Link>
+            </div>
+            <div className="relative">
+              <img
+                src={item.imageUrl}
+                alt={`${item.subtitle} showcase`}
+                className="rounded-lg w-full"
+              />
+            </div>
           </div>
         </div>
-      </div>
+      ))}
     </div>
   );
 };
@@ -52,7 +93,7 @@ const ProductList = () => {
     error 
   } = useSelector((state) => state.products);
 
-  useEffect(() => {
+  useEffect(() =>{
     if (status === 'idle') {
       dispatch(fetchProducts());
     }

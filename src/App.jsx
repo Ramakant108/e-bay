@@ -10,11 +10,12 @@ import Login from './pages/Login';
 import PrivateRoute from './components/PrivateRoute';
 import Footer from './components/Footer';
 import store from './redux/Store';
+import Profile from './pages/Profile';
+import Orders from './pages/Orders';
 
-// Layout component to handle conditional footer rendering
 const Layout = ({ children }) => {
   const location = useLocation();
-  const hideFooterPaths = ['/login']; // Add any other paths where footer should be hidden
+  const hideFooterPaths = ['/login']; 
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -40,6 +41,22 @@ function App() {
               element={
                 <PrivateRoute>
                   <Cart />
+                </PrivateRoute>
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                <PrivateRoute>
+                  <Profile/>
+                </PrivateRoute>
+              } 
+            />
+             <Route 
+              path="/orders" 
+              element={
+                <PrivateRoute>
+                  <Orders/>
                 </PrivateRoute>
               } 
             />

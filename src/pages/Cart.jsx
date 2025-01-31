@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { updateQuantity, removeFromCart, clearCart } from '../redux/cartSlice';
 import { useNavigate } from 'react-router-dom';
+import { addToOrder } from '../redux/orderSlice';
 
 const Cart = () => {
   const { items, total } = useSelector((state) => state.cart);
@@ -19,7 +20,10 @@ const Cart = () => {
   };
 
   const handleCheckout = () => {
-    alert('Checkout functionality to be implemented');
+    dispatch(addToOrder({items, total}))
+    dispatch(clearCart())
+    navigate('/orders')
+    // alert('Checkout functionality to be implemented');
   };
 
   return (
